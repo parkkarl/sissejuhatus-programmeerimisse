@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sissejuhatus programmeerimisse (JavaScripti näidetel)</title>
+<style>
+  :root{
+    --accent:#5b6cff;
+    --accent2:#00b3a4;
+    --bg:#f6f7fb;
+    --ink:#1d2233;
+    --muted:#5a6178;
+    --code-bg:#1e2030;
+    --code-ink:#e7e9f3;
+    --code-com:#8b94b5;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);overflow:hidden;
+  }
+  .deck{position:relative;width:100vw;height:100vh;}
+  .slide{
+    position:absolute;inset:0;display:none;flex-direction:column;
+    padding:5vh 7vw;justify-content:center;animation:fade .25s ease;
+  }
+  .slide.active{display:flex;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  h1{font-size:clamp(2rem,5vw,3.4rem);margin:0 0 .3em;line-height:1.1;}
+  h2{
+    font-size:clamp(1.6rem,3.6vw,2.5rem);margin:0 0 .5em;
+    color:var(--accent);border-left:8px solid var(--accent2);padding-left:.5em;line-height:1.1;
+  }
+  p,li{font-size:clamp(1rem,2vw,1.45rem);line-height:1.5;color:var(--ink);}
+  .muted{color:var(--muted);}
+  ul{margin:.3em 0 .6em;padding-left:1.2em;}
+  li{margin:.25em 0;}
+  pre{
+    background:var(--code-bg);color:var(--code-ink);
+    padding:1em 1.2em;border-radius:12px;overflow:auto;
+    font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
+    font-size:clamp(.85rem,1.7vw,1.25rem);line-height:1.55;
+    box-shadow:0 8px 30px rgba(20,24,60,.18);margin:.4em 0;
+  }
+  code{font-family:inherit;}
+  .com{color:var(--code-com);font-style:italic;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1.4em;align-items:start;}
+  @media(max-width:780px){.two{grid-template-columns:1fr;}}
+  .title-wrap{align-items:flex-start;}
+  .badge{
+    display:inline-block;background:var(--accent);color:#fff;font-weight:600;
+    padding:.35em .9em;border-radius:999px;font-size:clamp(.8rem,1.6vw,1.1rem);margin-bottom:1em;
+  }
+  .sub{font-size:clamp(1.2rem,2.6vw,1.9rem);color:var(--accent2);font-weight:600;margin:.1em 0 1.4em;}
+  .meta{font-size:clamp(1rem,1.9vw,1.3rem);color:var(--muted);line-height:1.9;}
+  .footer{
+    position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;
+    padding:.7em 1.4em;font-size:.95rem;color:var(--muted);pointer-events:none;
+  }
+  .bar{position:fixed;top:0;left:0;height:5px;background:var(--accent);transition:width .25s;z-index:5;}
+  .hint{position:fixed;bottom:.6em;left:50%;transform:translateX(-50%);font-size:.8rem;color:var(--muted);opacity:.7;}
+  /* PRINT → PDF: üks slaid lehe kohta */
+  @media print{
+    body{overflow:visible;}
+    .deck{height:auto;}
+    .slide{display:flex !important;position:relative;page-break-after:always;height:100vh;inset:auto;}
+    .footer,.bar,.hint{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<div class="deck" id="deck">
+
+  <!-- 1 -->
+  <section class="slide title-wrap">
+    <span class="badge">TAK25 · Kodutöö</span>
+    <h1>Sissejuhatus programmeerimisse</h1>
+    <div class="sub">JavaScripti näidetel</div>
+    <div class="meta">
+      Autor: <b>Karl Park</b><br>
+      Aine: Sissejuhatus programmeerimisse (TAK25)<br>
+      Kuupäev: 11.06.2026
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide">
+    <h2>Mis on JavaScript?</h2>
+    <p><b>Programmeerimine</b> = arvutile sammhaaval juhiste andmine, et ta midagi teeks.</p>
+    <p><b>JavaScript (JS)</b> on programmeerimiskeel, mis töötab veebibrauseris ja ka serveris (Node.js).
+       Kasutatakse: veebilehtede loogika, serverid, rakendused.</p>
+    <ul>
+      <li><b>HTML</b> — lehe <i>sisu ja struktuur</i> (mis on lehel)</li>
+      <li><b>CSS</b> — lehe <i>välimus</i> (kuidas asjad välja näevad)</li>
+      <li><b>JavaScript</b> — lehe <i>käitumine ja loogika</i> (mis juhtub, kui vajutad nuppu)</li>
+    </ul>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide">
+    <h2>Arenduskeskkond — kuidas koodi käivitada</h2>
+    <p>Mina kasutan <b>brauseri DevTools konsooli</b> (klahv <b>F12</b> → vahekaart <i>Console</i>)
+       ja koodi kirjutamiseks <b>VS Code</b>-i.</p>
+    <div class="two">
+      <div>
+        <p><b>1) Konsoolis:</b> ava F12 → kirjuta käsk → Enter.</p>
+        <pre><code>console.log("Tere konsoolist!");</code></pre>
+      </div>
+      <div>
+        <p><b>2) HTML-failis</b> <code>&lt;script&gt;</code> abil:</p>
+<pre><code>&lt;script&gt;
+  console.log("Tere lehelt!");
+&lt;/script&gt;</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <h2>Andmetüübid</h2>
+    <p><b>Andmetüüp</b> ütleb, mis <i>liiki</i> väärtus on — number, tekst või tõeväärtus.
+       Tüüp määrab, mida väärtusega teha tohib.</p>
+<pre><code>let täisarv = 42;      <span class="com">// number</span>
+let tekst = "Tere";    <span class="com">// string (tekst)</span>
+let tõene = true;      <span class="com">// boolean (tõene/väär)</span>
+
+typeof täisarv;        <span class="com">// "number"</span></code></pre>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <h2>Muutujad</h2>
+    <p><b>Muutuja</b> on nimeline koht mälus, kuhu hoiame väärtuse.
+       <b>let</b> = muudetav, <b>const</b> = konstant (ei muutu).</p>
+<pre><code>let vanus = 18;     <span class="com">// muudetav</span>
+const PI = 3.14;    <span class="com">// konstant</span>
+
+vanus = 19;         <span class="com">// ✅ lubatud</span>
+<span class="com">// PI = 4;          // ❌ annab vea</span></code></pre>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <h2>Tehted</h2>
+    <div class="two">
+      <div>
+        <p><b>Aritmeetilised</b></p>
+<pre><code>let a = 5, b = 2;
+a + b;   <span class="com">// 7   liitmine</span>
+a / b;   <span class="com">// 2.5 jagamine</span>
+a % b;   <span class="com">// 1   jääk</span></code></pre>
+      </div>
+      <div>
+        <p><b>Võrdlus ja loogika</b></p>
+<pre><code>5 &gt; 3;          <span class="com">// true</span>
+5 === 5;        <span class="com">// true (täpne =)</span>
+true &amp;&amp; false;   <span class="com">// false (JA)</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <h2>Tingimused</h2>
+    <p>Programm <b>valib</b>, mida teha vastavalt olukorrale: <code>if</code> / <code>else if</code> / <code>else</code>.</p>
+<pre><code>let vanus = 17;
+
+if (vanus &gt;= 18) {
+  console.log("Täisealine");
+} else {
+  console.log("Alaealine");   <span class="com">// see käivitub</span>
+}</code></pre>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <h2>Kordused (tsüklid)</h2>
+    <p>Korduse abil teeme <b>sama tegevust mitu korda</b>, ilma et peaks koodi mitu korda kirjutama.</p>
+    <div class="two">
+      <div>
+<pre><code><span class="com">// for-tsükkel</span>
+for (let i = 0; i &lt; 5; i++) {
+  console.log("i = " + i);
+}</code></pre>
+      </div>
+      <div>
+<pre><code><span class="com">// while-tsükkel</span>
+let x = 0;
+while (x &lt; 3) {
+  console.log("x = " + x);
+  x++;
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide">
+    <h2>Funktsioonid</h2>
+    <p><b>Funktsioon</b> on taaskasutatav koodiblokk: kirjeldad korra, kutsud välja mitu korda.</p>
+<pre><code>function tervita(nimi) {
+  console.log("Tere, " + nimi + "!");
+}
+tervita("Mari");
+tervita("Juhan");
+
+<span class="com">// noolfunktsioon (sama mõte, lühem)</span>
+const korrutaKahega = (x) =&gt; x * 2;
+korrutaKahega(5);   <span class="com">// 10</span></code></pre>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide">
+    <h2>Massiivid</h2>
+    <p><b>Massiiv</b> on järjestatud elementide kogum. Indeks algab <b>0</b>-st.</p>
+<pre><code>let õpilased = ["Mari", "Juhan", "Kati"];
+õpilased[0];       <span class="com">// "Mari"</span>
+õpilased.length;   <span class="com">// 3</span>
+
+<span class="com">// massiivi läbimine</span>
+for (let i = 0; i &lt; õpilased.length; i++) {
+  console.log(õpilased[i]);
+}</code></pre>
+  </section>
+
+  <!-- 11 -->
+  <section class="slide">
+    <h2>Andmestruktuurid</h2>
+    <p><b>Andmestruktuur</b> on viis andmete organiseerimiseks. Massiiv on üks, <b>objekt</b> teine.
+       Objekt hoiab <i>nimi–väärtus</i> paare.</p>
+<pre><code>let arvud = [1, 2, 3];                     <span class="com">// massiiv</span>
+let inimene = { nimi: "Mari", vanus: 20 }; <span class="com">// objekt</span>
+
+inimene.nimi;    <span class="com">// "Mari"</span>
+inimene.vanus;   <span class="com">// 20</span></code></pre>
+  </section>
+
+  <!-- 12 -->
+  <section class="slide">
+    <h2>Sisend ja väljund</h2>
+    <div class="two">
+      <div>
+        <p><b>Väljund</b> (programm näitab midagi)</p>
+<pre><code>console.log("Tere maailm!"); <span class="com">// konsooli</span>
+alert("Hoiatusaken!");       <span class="com">// hüpikaken</span></code></pre>
+      </div>
+      <div>
+        <p><b>Sisend</b> (kasutaja annab midagi)</p>
+<pre><code>let nimi = prompt("Sisesta nimi:");
+console.log("Tere, " + nimi + "!");</code></pre>
+      </div>
+    </div>
+    <p class="muted">Päris elus käib sisend/väljund tihti vormide, failide ja API-de kaudu — praegu piisab nendest.</p>
+  </section>
+
+  <!-- 13 -->
+  <section class="slide">
+    <h2>Algoritm · Klass · Kommentaarid</h2>
+    <ul>
+      <li><b>Algoritm</b> — täpne sammude jada probleemi lahendamiseks (nagu retsept).</li>
+      <li><b>Klass</b> — mall ehk vorm sarnaste objektide loomiseks.</li>
+      <li><b>Kommentaarid</b> — selgitused koodis, mida arvuti ei käivita.</li>
+    </ul>
+<pre><code>class Auto {
+  constructor(mark, aasta) {
+    this.mark = mark;
+    this.aasta = aasta;
+  }
+}
+let a = new Auto("Toyota", 2020);
+
+<span class="com">// üherealine kommentaar</span>
+<span class="com">/* mitmerealine
+   kommentaar */</span></code></pre>
+  </section>
+
+  <!-- 14 -->
+  <section class="slide">
+    <h2>Kokkuvõte — mida ma õppisin</h2>
+    <ul>
+      <li>Tean, mis on <b>muutuja, andmetüüp, massiiv, objekt, funktsioon, tingimus ja kordus</b>.</li>
+      <li>Oskan <b>lugeda lihtsat JavaScripti koodi</b> ja aru saada, mis see teeb.</li>
+      <li>Oskan koodi <b>käivitada brauseri konsoolis</b> (F12 → Console) ja <code>&lt;script&gt;</code> abil.</li>
+      <li>Saan aru, et <b>andmetüübid ja struktuurid</b> aitavad andmeid korras hoida.</li>
+    </ul>
+    <p class="sub">Aitäh! Küsimused?</p>
+  </section>
+
+</div>
+
+<div class="footer">
+  <span>Sissejuhatus programmeerimisse · JavaScript</span>
+  <span><span id="cur">1</span> / <span id="tot">14</span></span>
+</div>
+<div class="hint">← → liikumiseks · F11 täisekraan · Ctrl+P → PDF</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const bar=document.getElementById('bar');
+  const cur=document.getElementById('cur');
+  document.getElementById('tot').textContent=slides.length;
+  let i=0;
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    cur.textContent=i+1;
+  }
+  function next(){show(i+1);}
+  function prev(){show(i-1);}
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();next();}
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();prev();}
+    else if(e.key==='Home'){show(0);}
+    else if(e.key==='End'){show(slides.length-1);}
+  });
+  document.getElementById('deck').addEventListener('click',e=>{
+    (e.clientX < window.innerWidth/3) ? prev() : next();
+  });
+  show(0);
+</script>
+</body>
+</html>
